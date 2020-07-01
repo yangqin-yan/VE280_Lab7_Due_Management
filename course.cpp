@@ -74,6 +74,7 @@ void TechnicalCourse::updateTask(const std::string &type, int index, int due_mon
     tasks[numTasks].index = index;
     tasks[numTasks].due_month = due_month;
     tasks[numTasks].due_day = due_day;
+    numTasks++;
     if(type == "Lab" || type == "Project"){
         std::cout << course_code << " " << type << " "
         << index << " is released! Submit it via oj!" << std::endl;
@@ -162,14 +163,58 @@ void UpperlevelTechnicalCourse::updateTask(const std::string &type, int index, i
 //          do nothing if its due_month/due_day is unchanged.
 {
     // TODO: implement this function
-    for(int i = 0; i < numTasks; i++){
-        if(type == "Team Project"){
-            std::cout << course_code << " " << type << " "
-            << index << " is released! Submit it via github!" << std::endl;
-            return;
+    if(type == "Team Project"){
+        for(int i = 0; i < numTasks; i++){
+            if(tasks[i].type == "Team Project" && tasks[i].index == index){
+               tasks[i].due_month = due_month;
+               tasks[i].due_day = due_day;
+               break;
+            }
+            if(i == numTasks - 1){
+                if(numTasks == sizeTasks){
+                    throw tooManyTasks{};
+                }
+                tasks[numTasks].type = type;
+                tasks[numTasks].index = index;
+                tasks[numTasks].due_month = due_month;
+                tasks[numTasks].due_day = due_day;
+                numTasks++;
+                std::cout << course_code << " " << type << " "
+                          << index << " is released! Submit it via github!" << std::endl;
+                break;
+            }
+        }
+
+        // sort
+        for(int i = 0; i < numTasks - 1; i++){
+            for(int j = 1; j < numTasks; j++){
+                if(tasks[i].due_month > tasks[j].due_month ||
+                (tasks[i].due_month == tasks[j].due_month && tasks[i].due_day >= tasks[j].due_day)){
+                    // tasks[i] is later than tasks[j]
+                    Task temp;
+                    temp = tasks[i];
+                    tasks[i] = tasks[j];
+                    tasks[j] = temp;
+                }
+            }
+        }
+        return;
+    }
+
+    TechnicalCourse::updateTask(type, index, due_month, due_day);
+    // sort
+    for(int i = 0; i < numTasks - 1; i++){
+        for(int j = 1; j < numTasks; j++){
+            if(tasks[i].due_month > tasks[j].due_month ||
+               (tasks[i].due_month == tasks[j].due_month && tasks[i].due_day >= tasks[j].due_day)){
+                // tasks[i] is later than tasks[j]
+                Task temp;
+                temp = tasks[i];
+                tasks[i] = tasks[j];
+                tasks[j] = temp;
+            }
         }
     }
-    TechnicalCourse::updateTask(type, index, due_month, due_day);
 }
 
 Course *create(const std::string &class_type, const std::string &course_code, bool assign_size, int tasks_size)
