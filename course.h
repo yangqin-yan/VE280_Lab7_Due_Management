@@ -25,6 +25,7 @@ public:
     // EFFECTS: removes Task index of type
     virtual void print() = 0;
     // EFFECTS: prints all unfinished tasks of this Course
+    virtual ~Course() = default;
 };
 
 Course *create(const std::string &class_type, const std::string &course_code, bool assign_size, int tasks_size);
