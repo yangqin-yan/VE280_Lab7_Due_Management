@@ -163,13 +163,20 @@ void UpperlevelTechnicalCourse::updateTask(const std::string &type, int index, i
 //          do nothing if its due_month/due_day is unchanged.
 {
     // TODO: implement this function
-    Task position;
+    // check whether the information is needed to update.
+    for(int i = 0; i < numTasks; i++){
+        // check whether the due month and due day is duplicate
+        if(tasks[i].type == type && tasks[i].index == index
+           && due_month == tasks[i].due_month && due_day == tasks[i].due_day){
+                return;
+        }
+    }
+
     if(type == "Team Project"){
         for(int i = 0; i < numTasks; i++){
             if(tasks[i].type == "Team Project" && tasks[i].index == index){
                tasks[i].due_month = due_month;
                tasks[i].due_day = due_day;
-               position = tasks[i];
                break;
             }
             if(i == numTasks - 1){
@@ -180,7 +187,6 @@ void UpperlevelTechnicalCourse::updateTask(const std::string &type, int index, i
                 tasks[numTasks].index = index;
                 tasks[numTasks].due_month = due_month;
                 tasks[numTasks].due_day = due_day;
-                position = tasks[numTasks];
                 numTasks++;
                 std::cout << course_code << " " << type << " "
                           << index << " is released! Submit it via github!" << std::endl;
@@ -200,7 +206,7 @@ void UpperlevelTechnicalCourse::updateTask(const std::string &type, int index, i
                     tasks[j] = temp;
                 }
                 else if(tasks[i].due_month == tasks[j].due_month && tasks[i].due_day == tasks[j].due_day){
-                    if(position.type == tasks[j].type && position.index == tasks[j].index){
+                    if(type == tasks[i].type && index == tasks[i].index){
                         Task temp;
                         temp = tasks[i];
                         tasks[i] = tasks[j];
@@ -225,7 +231,7 @@ void UpperlevelTechnicalCourse::updateTask(const std::string &type, int index, i
                 tasks[j] = temp;
             }
             else if(tasks[i].due_month == tasks[j].due_month && tasks[i].due_day == tasks[j].due_day){
-                if(position.type == tasks[j].type && position.index == tasks[j].index){
+                if(type == tasks[i].type && index == tasks[i].index){
                     Task temp;
                     temp = tasks[i];
                     tasks[i] = tasks[j];
